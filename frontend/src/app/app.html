@@ -1,0 +1,43 @@
+<main class="shell">
+  <header>
+    <h1>Stress Detection Dashboard</h1>
+    <p>Teaching prototype • HRV features → stress condition</p>
+  </header>
+
+  @if (deployedStatic) {
+    <aside class="notice">
+      Static GitHub Pages demonstration only. Predictions require Flask and Angular running locally.
+    </aside>
+  }
+
+  <form (ngSubmit)="submit()">
+    <h2>Model input features ({{ fields.length }})</h2>
+    <div class="grid">
+      @for (field of fields; track field.name) {
+        <label>
+          {{ field.label }}
+          <input type="number" step="any" [name]="field.name"
+                 [(ngModel)]="values[field.name]" required />
+        </label>
+      }
+    </div>
+    <button type="submit" [disabled]="loading() || deployedStatic">
+      {{ loading() ? 'Predicting…' : 'Run local prediction' }}
+    </button>
+  </form>
+
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+
+  @if (result(); as r) {
+    <section class="result">
+      <h2>Prediction result</h2>
+      <p class="pred"><strong>{{ r.prediction }}</strong></p>
+      @for (row of rows(); track row.label) {
+        <p>{{ row.label }}: {{ row.pct }}%</p>
+      }
+      <p class="disc">{{ r.disclaimer }}</p>
+    </section>
+  }
+</main>
